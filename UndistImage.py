@@ -32,7 +32,7 @@ if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(description='Process image with calibrated undistortion.')
     parser.add_argument('CalibrationPath', help='Path to calibration file, .npz')
-    parser.add_argument('ImagePath', help='Path to image file/folder')
+    parser.add_argument('ImagePath', help='Path to image file/folder (.png, .jpg, .jpeg)')
     parser.add_argument('--OutputPath', '-o', help='Path to output folder', default='')
     parser.add_argument('--ImageAlpha', '-a', help='OpenCV undistortion alpha (0 to 1)', default = 1)
     args = vars(parser.parse_args())
@@ -41,7 +41,7 @@ if __name__ == "__main__":
         UndistortImage(**args)
     elif os.path.isdir(args['ImagePath']):
         import glob
-        fileTypes = ('*.png', '*.jpg')
+        fileTypes = ('*.png', '*.jpg', '*.jpeg')
         imagePaths = []
 
         for fileType in fileTypes:
