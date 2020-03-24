@@ -35,7 +35,7 @@ def processImage(imageFile: str, preview: bool = 0) -> Tuple[np.ndarray, np.ndar
 
 global pattern_size
 
-ImageFiles = glob.glob("./CalibImages/Left/*.png")[::3]
+ImageFiles = glob.glob("./CalibImages/Right/*.png")[::1]
 
 square_size = 20
 pattern_size = (11, 7)
@@ -70,6 +70,8 @@ for (pattern_points, corners) in chessboards:
 
 print('\nCalibrating ...')
 rms, camera_matrix, dist_coefs, _rvecs, _tvecs = cv2.calibrateCamera(objpoints, imgpoints, imageSize, None, None)
+
+np.savez('Right', camera_matrix=camera_matrix, dist_coefs=dist_coefs)
 
 print("\nRMS:", rms)
 print("Num images: ", len(imgpoints))
