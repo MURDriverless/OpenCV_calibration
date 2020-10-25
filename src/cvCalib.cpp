@@ -16,6 +16,8 @@ void calibratePoints(cv::Size boardSize, double squareSize, cv::Size imageSize, 
     cv::Mat stdDeviationsExtrinsics;
     cv::Mat perViewErrors;
 
+    int flags = 0;
+
     std::string outputPath = "./calibration.xml";
 
     std::vector<std::vector<cv::Point3f>> objPoints(1);
@@ -23,7 +25,7 @@ void calibratePoints(cv::Size boardSize, double squareSize, cv::Size imageSize, 
     objPoints.resize(foundPoints.size(), objPoints[0]);
 
     double reprojErr = cv::calibrateCamera(objPoints, foundPoints, imageSize, cameraMatrix, distCoeffs, rvecs, tvecs,
-        stdDeviationsIntrinsics, stdDeviationsExtrinsics, perViewErrors);
+        stdDeviationsIntrinsics, stdDeviationsExtrinsics, perViewErrors, flags);
 
     std::cout << "---" << std::endl;
     std::cout << "Calibration done, RMS: " << reprojErr << std::endl;

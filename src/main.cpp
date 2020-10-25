@@ -9,7 +9,11 @@
 #include "cvCalib.hpp"
 #include "ezGlob.hpp"
 
+#ifdef USE_OMP
 #include <omp.h>
+#else
+#define omp_get_num_threads() 1
+#endif // ifdef USE_OMP
 
 int main(int argc, char** argv) {
     std::vector<std::string> imagePaths = glob("../calibImages/*.png");
