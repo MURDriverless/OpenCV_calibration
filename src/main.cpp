@@ -22,6 +22,9 @@ int main(int argc, char** argv) {
     cv::Size boardSize(11, 7);
     cv::Size imageSize;
 
+    const double pixelSize = 3.45E-6; // [m]
+    const double focalLength = 5E-3;  // [m]
+
     std::vector<std::vector<cv::Point2f>> foundPoints;
 
     #pragma omp parallel for
@@ -43,12 +46,30 @@ int main(int argc, char** argv) {
 
             #pragma omp critical
             foundPoints.push_back(chessboardPoints);
-            std::cout << "Found frame, total : " << foundPoints.size() << std::endl;
         }
     }
 
+    std::cout << "---" << std::endl;
+    std::cout << "Calibration Details" << std::endl;
+    std::cout << "Image Size: " << imageSize << std::endl;
+    std::cout << "Num. Calib Images: " << foundPoints.size() << std::endl;
+    std::cout << "---" << std::endl;
     std::cout << "Calibrating" << std::endl;
-    calibratePoints(boardSize, squareSize, imageSize, foundPoints);
+
+    CalibArgs calibArgs;
+    calibArgs.cameraMatrix = cv::Mat::zeros(cv::Size2d(3, 3), CV_64FC1);
+    calibArgs.cameraMatrix.at<double>(0,0) = focalLength/pixelSize;
+    calibArgs.cameraMatrix.at<double>(1,1) = focalLength/pixelSize;
+    calibArgs.cameraMatrix.at<double>(2,2) = 1;
+    calibArgs.cameraMatrix.at<double>(0,2) = imageSize.width/2;
+    calibArgs.cameraMatrix.at<double>(1,2) = imageSize.height/2;
+
+    calibArgs.flags |= cv::CALIB_USE_INTRINSIC_GUESS;
+    calibArgs.flags |= cv::CALIB_ZERO_TANGENT_DIST;
+
+    calibArgs.isDefault = false;
+
+    calibratePoints(boardSize, squareSize, imageSize, foundPoints, calibArgs);
 
     return 0;
 }

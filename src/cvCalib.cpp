@@ -6,17 +6,18 @@
 #include <opencv2/core.hpp>
 #include <opencv2/calib3d.hpp>
 
-void calibratePoints(cv::Size boardSize, double squareSize, cv::Size imageSize, std::vector<std::vector<cv::Point2f>> foundPoints) {
+void calibratePoints(cv::Size boardSize, double squareSize, cv::Size imageSize, std::vector<std::vector<cv::Point2f>> foundPoints, const CalibArgs& calibArgs) {
+    std::cout << "Using default calibArgs: " << ((calibArgs.isDefault) ? "True" : "False") << std::endl;
+
     std::vector<cv::Mat> rvecs, tvecs;
 
-    cv::Mat cameraMatrix;
-    cv::Mat distCoeffs;
+    cv::Mat cameraMatrix(calibArgs.cameraMatrix);
+    cv::Mat distCoeffs(calibArgs.distCoeffs);
+    const int flags = calibArgs.flags;
 
     cv::Mat stdDeviationsIntrinsics;
     cv::Mat stdDeviationsExtrinsics;
     cv::Mat perViewErrors;
-
-    int flags = 0;
 
     std::string outputPath = "./calibration.xml";
 
